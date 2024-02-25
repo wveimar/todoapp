@@ -5,15 +5,16 @@
     <button (click)="addTodo()">+</button>
   </div>
   <div class="filters">
-    <button>All</button>
-    <button>Active</button>
-    <button>Completed</button>
+    <button (click)="changeFilter('all')" [class.active]="filter() === 'all'" >All</button>
+    <button (click)="changeFilter('active')" [class.active]="filter() === 'active'">Active</button>
+    <button (click)="changeFilter('completed')" [class.active]="filter() === 'completed'">Completed</button>
   </div>
+  {{filter()}}
   <ul class="todolist">
-    @for (todo of todoList(); track todo.id) { @if (todo.editing) {
+    @for (todo of todoListFilter(); track todo.id) { @if (todo.editing) {
     <!-- editing -->
     <li class="todo-editing">
-      <input type="text" placeholder="Edit Task" />
+      <input type="text" placeholder="Edit Task" [value]="todo.title"  (keydown.enter)="saveTitleTodo(todo.id,$event)"/>
     </li>
 
     }@else {
@@ -22,7 +23,7 @@
       <input type="checkbox" [checked]="todo.completed" (click)="toggleTodo(todo.id)"/>
       <label>{{ todo.title }}</label>
       @if (!todo.completed){
-        <button>Edit</button>
+        <button (click)="updateTodoEditingMode(todo.id)" >Edit</button>
       }
       <button class="text-red-400" (click)="removeTodo(todo.id)">Delete</button>
     </li>

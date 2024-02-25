@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { FilterType, TodoModel } from '../../models/todo';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -34,6 +34,21 @@ export class TodoComponent {
 
   filter = signal<FilterType>('all');
 
+  todoListFilter = computed(() => {
+    const filter = this.filter();
+    const todos = this.todoList();
+  
+    switch (filter) {
+      case 'active':
+        return todos.filter((todo) => !todo.completed);
+      case 'completed':
+        return todos.filter((todo) => todo.completed);
+      default:
+        return todos;
+    }
+  });
+  
+
   newTodo = new FormControl('', {
     nonNullable: true,
     validators: [Validators.required, Validators.minLength(3)],
@@ -65,16 +80,47 @@ export class TodoComponent {
           ? {
               ...todo,
               completed: !todo.completed,
-            }:
-             todo;
+            }
+          : todo;
       })
     );
   }
 
-  removeTodo (todoId: number){
-    this.todoList.update((prev_todos) => 
-    prev_todos.filter((todo)=>todo.id !==todoId)
+  removeTodo(todoId: number) {
+    this.todoList.update((prev_todos) =>
+      prev_todos.filter((todo) => todo.id !== todoId)
     );
+  }
 
+  updateTodoEditingMode(todoId: number) {
+    return this.todoList.update((prev_todos) =>
+      prev_todos.map((todo) => {
+        return todo.id === todoId
+          ? {
+              ...todo,
+              editing: true,
+            }
+          : {
+              ...todo,
+              editing: false,
+            };
+      })
+    );
+  }
+
+  saveTitleTodo(todoId: number, event: Event) {
+    const title = (event.target as HTMLInputElement).value;
+    console.log({ title });
+    return this.todoList.update((prev_todos) =>
+      prev_todos.map((todo) => {
+        return todo.id === todoId
+          ? {
+              ...todo,
+              title: title,
+              editing: false,
+            }
+          : todo;
+      })
+    );
   }
 }

@@ -5,4 +5,4 @@ export interface TodoModel {
   editing?: boolean;
 }
 
-export type FilterType = 'all' | 'active' | 'complete';
+export type FilterType = 'all' | 'active' | 'completed';
