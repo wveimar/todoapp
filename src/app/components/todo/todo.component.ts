@@ -70,4 +70,11 @@ export class TodoComponent {
       })
     );
   }
+
+  removeTodo (todoId: number){
+    this.todoList.update((prev_todos) => 
+    prev_todos.filter((todo)=>todo.id !==todoId)
+    );
+
+  }
 }
