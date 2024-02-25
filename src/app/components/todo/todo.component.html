@@ -10,17 +10,25 @@
     <button>Completed</button>
   </div>
   <ul class="todolist">
-    <!-- already edited -->
-    <li class="todo">
-      <input type="checkbox" />
-      <label>Task Title</label>
-      <button>Edit</button>
-      <button>Delete</button>
-    </li>
+    @for (todo of todoList(); track todo.id)
+    { 
+      @if (todo.editing)
+      {
+            <!-- editing -->
+            <li class="todo-editing">
+              <input type="text" placeholder="Edit Task" />
+            </li>
 
-    <!-- editing -->
-    <li class="todo-editing">
-      <input type="text" placeholder="Edit Task" />
-    </li>
+      }@else
+        {
+          <!-- already edited -->
+          <li class="todo">
+            <input type="checkbox" />
+            <label>{{ todo.title }}</label>
+            <button>Edit</button>
+            <button>Delete</button>
+          </li>
+        } 
+    }
   </ul>
 </section>
