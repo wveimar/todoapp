@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import { Component, OnInit, computed, effect, signal } from '@angular/core';
 import { FilterType, TodoModel } from '../../models/todo';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -10,7 +10,22 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
   templateUrl: './todo.component.html',
   styleUrl: './todo.component.css',
 })
-export class TodoComponent {
+export class TodoComponent implements OnInit {
+
+
+constructor() {
+  effect(() =>{
+    localStorage.setItem('todos', JSON.stringify(this.todoList()));
+  })
+
+}
+
+  ngOnInit(): void {
+    const storage =localStorage.getItem('todos');
+    if (storage) {
+      this.todoList.set(JSON.parse(storage))
+    }
+  }
   todoList = signal<TodoModel[]>([
     {
       id: 1,
